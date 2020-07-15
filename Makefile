@@ -8,7 +8,21 @@ INSTALL = /usr/bin/install
 INSTALL_PROGRAM = $(INSTALL)
 INSTALL_DATA = $(INSTALL) -m 644
 
-prefix = /usr/local
+
+STOW = $(shell                                                       \
+	if [ -n "$(STOW_DIR)" ] && command -v stow > /dev/null; then \
+		echo true;                                           \
+	else                                                         \
+		echo false;                                          \
+	fi                                                           \
+)
+
+ifneq ($(STOW),false)
+	STOW_NAME = todo.txt
+	prefix = $(STOW_DIR)/$(STOW_NAME)
+else
+	prefix = /usr/local
+endif
 
 # ifdef check allows the user to pass custom dirs
 # as per the README
@@ -67,14 +81,19 @@ install: installdirs
 	$(INSTALL_DATA) todo_completion $(DESTDIR)$(datarootdir)/todo
 	[ -e $(DESTDIR)$(sysconfdir)/todo/config ] || \
 	    sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" todo.cfg > $(DESTDIR)$(sysconfdir)/todo/config
+	if "$(STOW)"; then stow --verbose $(STOW_NAME); fi
 
 uninstall:
+	if "$(STOW)"; then stow --delete --verbose $(STOW_NAME); fi
 	rm -f $(DESTDIR)$(bindir)/todo.sh
 	rm -f $(DESTDIR)$(datarootdir)/todo
 	rm -f $(DESTDIR)$(sysconfdir)/todo/config
 
 	rmdir $(DESTDIR)$(datarootdir)
 	rmdir $(DESTDIR)$(sysconfdir)/todo
+
+	# remove remaining empty directories from the stow directory
+	if "$(STOW)"; then find $(STOW_DIR)/$(STOW_NAME) -type d -delete; fi
 
 installdirs:
 	mkdir -p $(DESTDIR)$(bindir) \
