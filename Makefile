@@ -117,19 +117,20 @@ installdirs:
 TESTS = $(wildcard tests/t[0-9][0-9][0-9][0-9]-*.sh)
 #TEST_OPTIONS=--verbose
 
+.PHONY: test-pre-clean
 test-pre-clean:
 	$(RM) -r $(BUILD_DIR)/tests/test-results "$(BUILD_DIR)/tests/trash directory"*
 
+.PHONY: aggregate-results
 aggregate-results: $(TESTS)
 
+# Force tests to get run every time
+.PHONY: $(TESTS)
 $(TESTS): test-pre-clean
 	export TEST_DIRECTORY=$(BUILD_DIR) \
 		&& cd tests && ./$(notdir $@) $(TEST_OPTIONS)
 
+.PHONY: test
 test: aggregate-results
 	tests/aggregate-results.sh tests/test-results/t*-*
 	$(RM) -r tests/test-results
-    
-# Force tests to get run every time
-.PHONY: test test-pre-clean aggregate-results $(TESTS)
-
