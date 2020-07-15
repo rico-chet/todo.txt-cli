@@ -9,12 +9,12 @@ INSTALL_PROGRAM = $(INSTALL)
 INSTALL_DATA = $(INSTALL) -m 644
 
 
-STOW = $(shell                                                       \
+STOW := $(shell \
 	if [ -n "$(STOW_DIR)" ] && command -v stow > /dev/null; then \
-		echo true;                                           \
-	else                                                         \
-		echo false;                                          \
-	fi                                                           \
+		echo true; \
+	else \
+		echo false; \
+	fi \
 )
 
 ifneq ($(STOW),false)
