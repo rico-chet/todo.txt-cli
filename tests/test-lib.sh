@@ -455,12 +455,12 @@ test_done () {
 cd -P .
 
 # Record our location for reference.
-TEST_DIRECTORY=$(pwd)
+TEST_DIRECTORY=${TEST_DIRECTORY:-$(pwd)}
 
 # Test repository
 test="trash directory.$(basename "$0" .sh)"
 test ! -z "$debug" || remove_trash="$TEST_DIRECTORY/$test"
-rm -fr "$test" || {
+rm -fr "$TEST_DIRECTORY/$test" || {
 	trap - EXIT
 	echo >&5 "FATAL: Cannot prepare test area"
 	exit 1
@@ -683,10 +683,10 @@ test_todo_completion () {
 	test_todo_custom_completion _todo "$@"
 }
 
-test_init_todo "$test"
+test_init_todo "$TEST_DIRECTORY/$test"
 # Use -P to resolve symlinks in our working directory so that the pwd
 # in subprocesses equals our $PWD (for pathname comparisons).
-cd -P "$test" || exit 1
+cd -P "$TEST_DIRECTORY/$test" || exit 1
 
 # Since todo.sh refers to the home directory often,
 # make sure we don't accidentally grab the tester's config
