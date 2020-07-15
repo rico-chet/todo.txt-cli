@@ -80,12 +80,12 @@ dist: $(DISTFILES) todo.sh
 	tar cf $(DISTNAME).tar $(DISTNAME)
 	gzip -f -9 $(DISTNAME).tar
 	tar cf $(DISTNAME).zip $(DISTNAME)
-	rm -r $(DISTNAME)
+	$(RM) -r $(DISTNAME)
 
 .PHONY: clean
 clean: test-pre-clean
-	rm -f $(DISTNAME).tar.gz $(DISTNAME).zip
-	rm VERSION-FILE
+	$(RM) $(BUILD_DIR)/$(DISTNAME).tar.gz $(BUILD_DIR)/$(DISTNAME).zip
+	$(RM) $(BUILD_DIR)/VERSION-FILE
 
 install: installdirs
 	$(INSTALL_PROGRAM) todo.sh $(DESTDIR)$(bindir)/todo.sh
@@ -96,9 +96,9 @@ install: installdirs
 
 uninstall:
 	if "$(STOW)"; then stow --delete --verbose $(STOW_NAME); fi
-	rm -f $(DESTDIR)$(bindir)/todo.sh
-	rm -f $(DESTDIR)$(datarootdir)/todo
-	rm -f $(DESTDIR)$(sysconfdir)/todo/config
+	$(RM) $(DESTDIR)$(bindir)/todo.sh
+	$(RM) $(DESTDIR)$(datarootdir)/todo
+	$(RM) $(DESTDIR)$(sysconfdir)/todo/config
 
 	rmdir $(DESTDIR)$(datarootdir)
 	rmdir $(DESTDIR)$(sysconfdir)/todo
@@ -118,7 +118,7 @@ TESTS = $(wildcard tests/t[0-9][0-9][0-9][0-9]-*.sh)
 #TEST_OPTIONS=--verbose
 
 test-pre-clean:
-	rm -rf tests/test-results "tests/trash directory"*
+	$(RM) -r $(BUILD_DIR)/tests/test-results "$(BUILD_DIR)/tests/trash directory"*
 
 aggregate-results: $(TESTS)
 
@@ -128,7 +128,7 @@ $(TESTS): test-pre-clean
 
 test: aggregate-results
 	tests/aggregate-results.sh tests/test-results/t*-*
-	rm -rf tests/test-results
+	$(RM) -r tests/test-results
     
 # Force tests to get run every time
 .PHONY: test test-pre-clean aggregate-results $(TESTS)
