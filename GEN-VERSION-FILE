@@ -1,7 +1,11 @@
 #!/bin/sh
 # Based on git's GIT-VERSION-GEN.
 
-VF=VERSION-FILE
+if [ -n "${BUILD_DIR}" ]; then
+	VF=${BUILD_DIR}/VERSION-FILE
+else
+	VF=VERSION-FILE
+fi
 DEF_VER=v2.2
 
 LF='
