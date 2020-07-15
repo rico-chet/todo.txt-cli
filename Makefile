@@ -20,12 +20,12 @@ ifndef BUILD_DIR
 	endif
 endif
 
-STOW = $(shell                                                       \
+STOW := $(shell \
 	if [ -n "$(STOW_DIR)" ] && command -v stow > /dev/null; then \
-		echo true;                                           \
-	else                                                         \
-		echo false;                                          \
-	fi                                                           \
+		echo true; \
+	else \
+		echo false; \
+	fi \
 )
 
 ifneq ($(STOW),false)
