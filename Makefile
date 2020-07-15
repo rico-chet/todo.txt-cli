@@ -8,6 +8,17 @@ INSTALL = /usr/bin/install
 INSTALL_PROGRAM = $(INSTALL)
 INSTALL_DATA = $(INSTALL) -m 644
 
+ifndef BUILD_DIR_ROOT
+	BUILD_DIR_ROOT := /tmp
+endif
+
+ifndef BUILD_DIR
+	export BUILD_DIR := $(shell \
+		mktemp -d -p $(BUILD_DIR_ROOT) todo.txt-cli-build-XXXXXXXX)
+	ifneq ($(.SHELLSTATUS),0)
+		$(error "cannot initialize build dir")
+	endif
+endif
 
 STOW = $(shell                                                       \
 	if [ -n "$(STOW_DIR)" ] && command -v stow > /dev/null; then \
@@ -50,12 +61,12 @@ endif
 # Dynamically detect/generate version file as necessary
 # This file will define a variable called VERSION.
 .PHONY: .FORCE-VERSION-FILE
-VERSION-FILE: .FORCE-VERSION-FILE
+$(BUILD_DIR)/VERSION-FILE: .FORCE-VERSION-FILE
 	@./GEN-VERSION-FILE
--include VERSION-FILE
+-include $(BUILD_DIR)/VERSION-FILE
 
 # Maybe this will include the version in it.
-todo.sh: VERSION-FILE
+todo.sh: $(BUILD_DIR)/VERSION-FILE
 
 # For packaging
 DISTFILES := todo.cfg todo_completion
