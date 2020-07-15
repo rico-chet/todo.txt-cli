@@ -72,6 +72,7 @@ todo.sh: $(BUILD_DIR)/VERSION-FILE
 DISTFILES := todo.cfg todo_completion
 
 DISTNAME=todo.txt_cli-$(VERSION)
+.PHONY: dist
 dist: $(DISTFILES) todo.sh
 	mkdir -p $(DISTNAME)
 	cp -f $(DISTFILES) $(DISTNAME)/
@@ -87,6 +88,7 @@ clean: test-pre-clean
 	$(RM) $(BUILD_DIR)/$(DISTNAME).tar.gz $(BUILD_DIR)/$(DISTNAME).zip
 	$(RM) $(BUILD_DIR)/VERSION-FILE
 
+.PHONY: install
 install: installdirs
 	$(INSTALL_PROGRAM) todo.sh $(DESTDIR)$(bindir)/todo.sh
 	$(INSTALL_DATA) todo_completion $(DESTDIR)$(datarootdir)/todo
@@ -94,6 +96,7 @@ install: installdirs
 	    sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" todo.cfg > $(DESTDIR)$(sysconfdir)/todo/config
 	if "$(STOW)"; then stow --verbose $(STOW_NAME); fi
 
+.PHONY: uninstall
 uninstall:
 	if "$(STOW)"; then stow --delete --verbose $(STOW_NAME); fi
 	$(RM) $(DESTDIR)$(bindir)/todo.sh
@@ -106,6 +109,7 @@ uninstall:
 	# remove remaining empty directories from the stow directory
 	if "$(STOW)"; then find $(STOW_DIR)/$(STOW_NAME) -type d -delete; fi
 
+.PHONY: installdirs
 installdirs:
 	mkdir -p $(DESTDIR)$(bindir) \
 	         $(DESTDIR)$(sysconfdir)/todo \
