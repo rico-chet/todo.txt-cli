@@ -62,7 +62,7 @@ endif
 # This file will define a variable called VERSION.
 .PHONY: .FORCE-VERSION-FILE
 $(BUILD_DIR)/VERSION-FILE: .FORCE-VERSION-FILE
-	@./GEN-VERSION-FILE
+	@BUILD_DIR=$(BUILD_DIR) ./GEN-VERSION-FILE
 -include $(BUILD_DIR)/VERSION-FILE
 
 # Maybe this will include the version in it.
