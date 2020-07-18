@@ -14,7 +14,7 @@ endif
 
 ifndef BUILD_DIR
 	export BUILD_DIR := $(shell \
-		mktemp -d -p $(BUILD_DIR_ROOT) todo.txt-cli-build-XXXXXXXX)
+		mktemp -d -p "$(BUILD_DIR_ROOT)" todo.txt-cli-build-XXXXXXXX)
 	ifneq ($(.SHELLSTATUS),0)
 		$(error "cannot initialize build dir")
 	endif
@@ -61,12 +61,12 @@ endif
 # Dynamically detect/generate version file as necessary
 # This file will define a variable called VERSION.
 .PHONY: .FORCE-VERSION-FILE
-$(BUILD_DIR)/VERSION-FILE: .FORCE-VERSION-FILE
-	@BUILD_DIR=$(BUILD_DIR) ./GEN-VERSION-FILE
--include $(BUILD_DIR)/VERSION-FILE
+"$(BUILD_DIR)/VERSION-FILE": .FORCE-VERSION-FILE
+	@BUILD_DIR="$(BUILD_DIR)" ./GEN-VERSION-FILE
+-include "$(BUILD_DIR)/VERSION-FILE"
 
 # Maybe this will include the version in it.
-todo.sh: $(BUILD_DIR)/VERSION-FILE
+todo.sh: "$(BUILD_DIR)/VERSION-FILE"
 
 # For packaging
 DISTFILES := todo.cfg todo_completion
