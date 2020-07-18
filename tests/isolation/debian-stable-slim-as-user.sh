@@ -6,9 +6,6 @@ set -o pipefail
 
 shellcheck "${0}"
 
-#base_img="${1}"
-#FROM "\${base_img}"
-
 image_id="$(docker build --quiet - <<-EOF
 	FROM debian:stable-slim
 
